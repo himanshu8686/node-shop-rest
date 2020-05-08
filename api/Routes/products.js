@@ -3,7 +3,30 @@ const createError = require('http-errors');
 const mongoose = require('mongoose');
 const Product = require('../Models/Product.model');
 const multer = require('multer');
-const upload = multer();
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(createError(500, "not in proper format"), false);
+    }
+};
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+
+});
 
 
 const router = express.Router();
@@ -41,12 +64,14 @@ router.get('/', async (req, res) => {
 /**
  *  creating a product
  */
-router.post('/', async (req, res, next) => {
+router.post('/', upload.single('productImage'), async (req, res, next) => {
+    console.log("file=>", req.file);
     try {
         const product = new Product({
             _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
-            price: req.body.price
+            price: req.body.price,
+            productImage: `localhost:${process.env.PORT}\\` + req.file.path
         });
         const result = await product.save();
         console.log('From database', result);

@@ -21,6 +21,8 @@ require('./initDB')();
 // Server config
 const PORT = process.env.PORT || 3000;
 
+app.use('/uploads', express.static('uploads'));
+
 //CORS error message handle middleware before routes
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
