@@ -3,6 +3,7 @@ const createError = require('http-errors');
 const dotenv = require('dotenv').config();
 const productRoutes = require('./api/Routes/products');
 const orderRoutes = require('./api/Routes/orders');
+const userRoutes = require('./api/Routes/user');
 const app = express();
 
 console.log(dotenv.parsed);
@@ -38,6 +39,8 @@ app.use((req, res, next) => {
 app.use('/products', productRoutes);
 
 app.use('/orders', orderRoutes);
+
+app.use('/users', userRoutes);
 
 
 // middleware to check if url is correct or not
