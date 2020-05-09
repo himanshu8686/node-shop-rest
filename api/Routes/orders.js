@@ -2,13 +2,14 @@ const express = require("express");
 const createError = require('http-errors');
 const mongoose = require('mongoose');
 const Order = require('../Models/Order.model');
+const checkAuth = require('../Middleware/check-auth');
 const router = express.Router();
 
 
 /**
  *  getting all orders
  */
-router.get('/', async (req, res, next) => {
+router.get('/', checkAuth, async (req, res, next) => {
     // console.log('getting all orders');
     try {
 
@@ -41,7 +42,7 @@ router.get('/', async (req, res, next) => {
 /**
  *  creating order
  */
-router.post('/', async (req, res, next) => {
+router.post('/', checkAuth, async (req, res, next) => {
     console.log('creating order');
 
     try {
@@ -74,7 +75,7 @@ router.post('/', async (req, res, next) => {
 /**
  *  getting all orders by id
  */
-router.get('/:orderId', async (req, res, next) => {
+router.get('/:orderId', checkAuth, async (req, res, next) => {
     // console.log('getting order by id');
     try {
         const id = req.params.orderId;
@@ -106,7 +107,7 @@ router.get('/:orderId', async (req, res, next) => {
 /**
  *  delete orders by id
  */
-router.delete('/:orderId', async (req, res, next) => {
+router.delete('/:orderId', checkAuth, async (req, res, next) => {
     console.log('deleting all order');
     const id = req.params.orderId;
     try {

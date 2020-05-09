@@ -3,6 +3,8 @@ const createError = require('http-errors');
 const mongoose = require('mongoose');
 const Product = require('../Models/Product.model');
 const multer = require('multer');
+const checkAuth = require('../Middleware/check-auth');
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads');
@@ -34,7 +36,7 @@ const router = express.Router();
 /**
  *  getting all Products
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     // res.send('getting lists of all products');
     try {
         const results = await Product.find({}, {
@@ -64,7 +66,7 @@ router.get('/', async (req, res) => {
 /**
  *  creating a product
  */
-router.post('/', upload.single('productImage'), async (req, res, next) => {
+router.post('/', checkAuth, upload.single('productImage'), async (req, res, next) => {
     console.log("file=>", req.file);
     try {
         const product = new Product({
@@ -123,7 +125,7 @@ router.get('/:productId', async (req, res, next) => {
 /**
  *  update product by id
  */
-router.patch('/:productId', async (req, res, next) => {
+router.patch('/:productId', checkAuth, async (req, res, next) => {
     // console.log('update product by id');
     try {
         const id = req.params.productId;
@@ -160,7 +162,7 @@ router.patch('/:productId', async (req, res, next) => {
 /**
  * delete product by id
  */
-router.delete('/:productId', async (req, res, next) => {
+router.delete('/:productId', checkAuth, async (req, res, next) => {
     // console.log('delete product by id');
     const id = req.params.productId;
     try {
